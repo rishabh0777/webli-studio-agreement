@@ -1,26 +1,769 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-sans: var(--font-jakarta);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-jetbrains);
+}
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-tap-highlight-color: transparent;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100%;
+  margin: 0;
+  background: #f1f1f1;
+  color: #000000;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+button:disabled {
+  cursor: progress;
+}
+
+input,
+textarea {
+  font-family: inherit;
+}
+
+::selection {
+  background: #000000;
+  color: #ffffff;
+}
+
+input[type="date"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d4d4d4 transparent;
+}
+
+.thin-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+}
+
+/* ============================================================
+   A4 sheet — all document styling uses explicit monochrome
+   hex values so html2canvas can render every computed colour.
+   ============================================================ */
+
+.a4-page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: #ffffff;
+  color: #000000;
+  font-family: var(--font-jakarta), "Helvetica Neue", Arial, sans-serif;
+  font-size: 8pt;
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 26px 50px -30px rgba(0, 0, 0, 0.32);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.a4-page * {
+  box-sizing: border-box;
+}
+
+.preview-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10mm;
+}
+
+.measure-wrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.measure-sheet {
+  box-shadow: none !important;
+}
+
+/* ---------- watermark ---------- */
+
+.doc-watermark {
+  position: absolute;
+  top: 73.5mm;
+  left: 30mm;
+  width: 150mm;
+  height: 150mm;
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.doc-watermark img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* ---------- header ---------- */
+
+.doc-header {
+  position: absolute;
+  top: 13mm;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 0 15mm;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.doc-header-row {
+  padding-bottom: 3mm;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.doc-header-left {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+}
+
+.doc-header-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.doc-brand {
+  display: inline-block;
+}
+
+.doc-brand img {
+  display: inline-block;
+  vertical-align: middle;
+  height: 8.6mm;
+  width: auto;
+}
+
+.doc-brand-word {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 2.8mm;
+  font-size: 6.3pt;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1.45;
+  color: #000000;
+}
+
+.doc-pill {
+  display: inline-block;
+  vertical-align: middle;
+  padding: 1.7mm 3.6mm;
+  border-radius: 999px;
+  background: #000000;
+  color: #ffffff;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.9pt;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.doc-client-logo {
+  display: block;
+  height: 32px;
+  width: auto;
+  max-width: 36mm;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+/* ---------- body / footer ---------- */
+
+.a4-body {
+  position: absolute;
+  top: 29mm;
+  left: 15mm;
+  right: 15mm;
+  bottom: 20mm;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.doc-block {
+  padding-bottom: 5mm;
+}
+
+.doc-footer {
+  position: absolute;
+  bottom: 9mm;
+  left: 0;
+  right: 0;
+  width: 100%;
+  padding: 0 15mm;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.7pt;
+  letter-spacing: 0.14em;
+  color: #000000;
+  z-index: 2;
+}
+
+.doc-footer-row {
+  border-top: 1px solid #e5e5e5;
+  padding-top: 2.4mm;
+}
+
+.doc-footer-left,
+.doc-footer-right {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.doc-footer-left {
+  text-align: left;
+}
+
+.doc-footer-center {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.doc-footer-right {
+  text-align: right;
+}
+
+/* ---------- title ---------- */
+
+.doc-title-italic {
+  margin: 0;
+  font-family: var(--font-playfair), Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 23pt;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #000000;
+}
+
+.doc-title-main {
+  margin: 2mm 0 0;
+  font-size: 27pt;
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: 0.14em;
+  color: #000000;
+}
+
+.doc-title-sub {
+  font-size: 19pt;
+  letter-spacing: 0.13em;
+}
+
+.doc-lede {
+  margin: 4.5mm 0 0;
+  max-width: 128mm;
+  font-size: 7.4pt;
+  line-height: 1.65;
+  color: #333333;
+}
+
+.doc-lede strong {
+  color: #000000;
+  font-weight: 600;
+}
+
+.doc-lede-mono {
+  margin: 2.2mm 0 0;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.9pt;
+  letter-spacing: 0.06em;
+  color: #6b6b6b;
+}
+
+/* ---------- labels & section heads ---------- */
+
+.doc-label {
+  display: block;
+  margin: 0;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.7pt;
+  letter-spacing: 0.18em;
+  color: #6b6b6b;
+}
+
+.doc-section-head {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: 3mm;
+  padding-bottom: 1.6mm;
+  border-bottom: 1px solid #000000;
+}
+
+.doc-section-head > span {
+  display: table-cell;
+}
+
+.doc-section-head > span:last-child {
+  text-align: right;
+}
+
+.doc-section-title {
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 6pt;
+  letter-spacing: 0.18em;
+  color: #000000;
+}
+
+.doc-section-meta {
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.7pt;
+  letter-spacing: 0.1em;
+  color: #6b6b6b;
+}
+
+/* ---------- parties ---------- */
+
+.doc-parties {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.doc-party {
+  width: 50%;
+  vertical-align: top;
+  padding: 3.6mm 0;
+}
+
+.doc-party-left {
+  padding-right: 6mm;
+}
+
+.doc-party-right {
+  border-left: 1px solid #e5e5e5;
+  padding-left: 6mm;
+}
+
+.doc-party-name {
+  margin: 1.8mm 0 0;
+  font-size: 11pt;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #000000;
+}
+
+.doc-party-role {
+  margin: 1.2mm 0 0;
+  font-size: 6.8pt;
+  line-height: 1.6;
+  color: #333333;
+}
+
+.doc-party-meta {
+  margin: 2.2mm 0 0;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.6pt;
+  line-height: 1.85;
+  letter-spacing: 0.05em;
+  color: #6b6b6b;
+}
+
+/* ---------- overview ---------- */
+
+.doc-body-text {
+  margin: 0;
+  max-width: 172mm;
+  font-size: 7.6pt;
+  line-height: 1.78;
+  color: #333333;
+}
+
+/* ---------- deliverables table ---------- */
+
+.doc-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.doc-table th {
+  padding: 0 0 1.8mm;
+  border-bottom: 1px solid #e5e5e5;
+  text-align: left;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.5pt;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: #6b6b6b;
+}
+
+.doc-table td {
+  padding: 2.6mm 0;
+  border-bottom: 1px solid #ededed;
+  vertical-align: top;
+}
+
+.doc-table tr:last-child td {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.doc-row-index {
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.9pt;
+  color: #6b6b6b;
+}
+
+.doc-row-title {
+  padding-right: 5mm !important;
+  font-size: 7.6pt;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #000000;
+}
+
+.doc-row-desc {
+  font-size: 7pt;
+  line-height: 1.65;
+  color: #333333;
+}
+
+/* ---------- commercials ---------- */
+
+.doc-commercials {
+  padding: 4.6mm 5mm 4.2mm;
+  background: #f8f8f8;
+  border: 1px solid #ededed;
+}
+
+.doc-commercials-head {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  margin-bottom: 2.6mm;
+}
+
+.doc-commercials-head > span {
+  display: table-cell;
+}
+
+.doc-commercials-head > span:last-child {
+  text-align: right;
+}
+
+.doc-money {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.doc-money td {
+  padding: 2.1mm 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 7.2pt;
+  color: #333333;
+}
+
+.doc-money td:last-child {
+  text-align: right;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 7.4pt;
+  color: #000000;
+  white-space: nowrap;
+}
+
+.doc-money tr.doc-money-total td {
+  padding-top: 2.8mm;
+  padding-bottom: 0;
+  border-top: 1px solid #000000;
+  border-bottom: none;
+  font-size: 7.6pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #000000;
+}
+
+.doc-money tr.doc-money-total td:last-child {
+  font-size: 10pt;
+}
+
+.doc-meta {
+  width: 100%;
+  margin-top: 3.4mm;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border-top: 1px solid #e5e5e5;
+}
+
+.doc-meta td {
+  padding-top: 2.8mm;
+  vertical-align: top;
+}
+
+.doc-meta td:last-child {
+  text-align: right;
+}
+
+.doc-meta-value {
+  display: block;
+  margin-top: 1.1mm;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 6.6pt;
+  letter-spacing: 0.03em;
+  color: #000000;
+}
+
+.doc-fineprint {
+  margin: 3mm 0 0;
+  font-size: 5.8pt;
+  line-height: 1.6;
+  color: #6b6b6b;
+}
+
+/* ---------- clauses ---------- */
+
+.doc-clauses-lede {
+  margin: 3mm 0 6mm;
+  max-width: 120mm;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.9pt;
+  letter-spacing: 0.06em;
+  line-height: 1.8;
+  color: #6b6b6b;
+}
+
+.doc-clause-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.doc-clause-num {
+  width: 11mm;
+  padding: 0.6mm 0 0;
+  vertical-align: top;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 6pt;
+  letter-spacing: 0.08em;
+  color: #000000;
+}
+
+.doc-clause-title {
+  margin: 0 0 1.4mm;
+  font-size: 8.2pt;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: #000000;
+}
+
+.doc-clause-body {
+  margin: 0;
+  font-size: 7.2pt;
+  line-height: 1.78;
+  color: #333333;
+}
+
+/* ---------- signatures ---------- */
+
+.doc-signatures {
+  padding-top: 2mm;
+  break-inside: avoid;
+}
+
+.doc-signatures-fixed {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.doc-witness {
+  margin-bottom: 4.5mm;
+  padding-top: 2.6mm;
+  border-top: 1px solid #000000;
+}
+
+.doc-witness-text {
+  margin: 1.4mm 0 0;
+  font-family: var(--font-playfair), Georgia, serif;
+  font-style: italic;
+  font-size: 8pt;
+  line-height: 1.5;
+  color: #333333;
+}
+
+.doc-sign-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.doc-sign-cell {
+  width: 50%;
+  padding-right: 8mm;
+  vertical-align: top;
+}
+
+.doc-sign-cell-right {
+  padding-right: 0;
+  padding-left: 8mm;
+  border-left: 1px solid #e5e5e5;
+}
+
+.doc-sign-area {
+  position: relative;
+  height: 18mm;
+}
+
+.doc-sign-image {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 1.5mm;
+}
+
+.doc-sign-image img {
+  display: block;
+  max-height: 16mm;
+  max-width: 68mm;
+  object-fit: contain;
+}
+
+.doc-sign-empty {
+  height: 18mm;
+  border: 1px solid #e5e5e5;
+  background: #fcfcfc;
+  text-align: center;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.4pt;
+  line-height: 18mm;
+  letter-spacing: 0.14em;
+  color: #b0b0b0;
+}
+
+.doc-sign-rule {
+  border-top: 1px solid #000000;
+}
+
+.doc-sign-name {
+  margin: 2.2mm 0 0;
+  font-size: 8.4pt;
+  font-weight: 700;
+  color: #000000;
+}
+
+.doc-sign-role {
+  margin: 0.8mm 0 0;
+  font-size: 6.8pt;
+  color: #333333;
+}
+
+.doc-sign-date {
+  margin: 1.6mm 0 0;
+  font-family: var(--font-jetbrains), "Courier New", monospace;
+  font-size: 5.8pt;
+  letter-spacing: 0.08em;
+  color: #6b6b6b;
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .app-sidebar,
+  .app-toolbar,
+  .measure-wrap,
+  .no-print {
+    display: none !important;
+  }
+
+  .app-shell,
+  .app-main,
+  .preview-pane,
+  .preview-canvas,
+  .preview-stack {
+    display: block !important;
+    height: auto !important;
+    min-height: 0 !important;
+    width: auto !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 0 !important;
+    border: 0 !important;
+  }
+
+  .a4-page {
+    width: 210mm !important;
+    height: 296.9mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+  }
+
+  .a4-page:last-of-type {
+    break-after: auto;
+    page-break-after: auto;
+  }
 }
