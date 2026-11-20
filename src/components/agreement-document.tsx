@@ -128,7 +128,7 @@ function PartiesBlock({ data }: { data: Agreement }) {
                 <br />
                 {(data.agencyTitle || "FOUNDER, WEBLI STUDIO").toUpperCase()}
                 <br />
-                HELLO@WEBLI.STUDIO
+                webli.webagency@gmail.com
                 <br />
                 INDIA
               </p>

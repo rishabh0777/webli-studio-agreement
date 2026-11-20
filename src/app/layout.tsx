@@ -25,6 +25,10 @@ export const metadata: Metadata = {
   title: "Service Agreement — Webli Studio",
   description:
     "Webli Studio service agreement generator with a live A4 document preview, editable legal clauses and print-ready PDF export.",
+  icons: {
+    icon: "/favicon-1.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
