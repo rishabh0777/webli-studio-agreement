@@ -340,6 +340,7 @@ function SignaturesBlock({
             <td className="doc-sign-cell">
               <span className="doc-label">FOR WEBLI STUDIO</span>
               <div className="doc-sign-area">
+                <div className="doc-sign-empty">SIGNATURE</div>
                 <div className="doc-sign-image">
                   {signature ? (
                     // eslint-disable-next-line @next/next/no-img-element
