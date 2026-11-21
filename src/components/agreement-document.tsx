@@ -357,7 +357,7 @@ function SignaturesBlock({
                 FOR CLIENT — {(data.clientName || "CLIENT").toUpperCase()}
               </span>
               <div className="doc-sign-area">
-                <div className="doc-sign-empty">SIGNATURE &amp; COMPANY STAMP</div>
+                <div className="doc-sign-empty">SIGNATURE</div>
               </div>
               <div className="doc-sign-rule" />
               <p className="doc-sign-name">{data.clientRepresentative || "—"}</p>
